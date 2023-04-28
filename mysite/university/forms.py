@@ -44,3 +44,13 @@ class TeacherForm(forms.Form):
         if not check_digits(subject):
             raise ValidationError("Only letters are allowed for the Subject...")
         return subject
+
+
+class GroupForm(forms.Form):
+    group_name = forms.CharField(label="Group name", max_length=100)
+
+    def clean_group_name(self):
+        group_name = self.cleaned_data["group_name"]
+        if not group_name[0].isalpha():
+            raise ValidationError("Group name must start with a letter...")
+        return group_name

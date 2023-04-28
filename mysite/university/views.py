@@ -1,12 +1,13 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from .forms import TeacherForm
-from .models import Teacher
+from .forms import TeacherForm, GroupForm
+from .models import Teacher, Group
 
 
 def index(request):
-    return HttpResponse("Hello. You're at the university index.")
+    name = "university"
+    return render(request, "index.html", {"name": name})
 
 
 def add_teacher(request):
@@ -28,13 +29,20 @@ def add_teacher(request):
 
 def show_teachers(request):
     teachers_list = list(Teacher.objects.all().values())
-    context = {"teachers_list": teachers_list}
-    return render(request, "teachers.html", context)
+    return render(request, "teachers.html", {"teachers_list": teachers_list})
 
 
 def add_group(request):
-    pass
+    if request.method == "POST":
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            Group.objects.create(group_name=request.POST["group_name"])
+            return HttpResponseRedirect("/university/groups")
+    else:
+        form = GroupForm()
+    return render(request, "group.html", {"form": form})
 
 
 def show_groups(request):
-    pass
+    groups_list = list(Group.objects.all().values())
+    return render(request, "groups.html", {"groups_list": groups_list})
