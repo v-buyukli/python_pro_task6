@@ -4,10 +4,6 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 
-def check_digits(string):
-    return string.isalpha()
-
-
 class TeacherForm(forms.Form):
     first_name = forms.CharField(label="First name", max_length=100)
     last_name = forms.CharField(label="Last name", max_length=100)
@@ -15,21 +11,25 @@ class TeacherForm(forms.Form):
     birthdate = forms.DateField(label="Birthdate (yyyy-mm-dd)")
     subject = forms.CharField(label="Subject", max_length=100)
 
+    @staticmethod
+    def check_digits(string):
+        return string.isalpha()
+
     def clean_first_name(self):
         first_name = self.cleaned_data["first_name"]
-        if not check_digits(first_name):
+        if not TeacherForm.check_digits(first_name):
             raise ValidationError("Only letters are allowed for the First name...")
         return first_name
 
     def clean_last_name(self):
         last_name = self.cleaned_data["last_name"]
-        if not check_digits(last_name):
+        if not TeacherForm.check_digits(last_name):
             raise ValidationError("Only letters are allowed for the Last name...")
         return last_name
 
     def clean_patronymic(self):
         patronymic = self.cleaned_data["patronymic"]
-        if not check_digits(patronymic):
+        if not TeacherForm.check_digits(patronymic):
             raise ValidationError("Only letters are allowed for the Patronymic...")
         return patronymic
 
@@ -41,7 +41,7 @@ class TeacherForm(forms.Form):
 
     def clean_subject(self):
         subject = self.cleaned_data["subject"]
-        if not check_digits(subject):
+        if not TeacherForm.check_digits(subject):
             raise ValidationError("Only letters are allowed for the Subject...")
         return subject
 
